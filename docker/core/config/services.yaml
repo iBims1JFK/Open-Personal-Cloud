@@ -1,0 +1,26 @@
+- Infrastructure:
+    - Homepage:
+        icon: homepage.png
+        href: http://cloud.{{ domain }}
+        description: This dashboard
+
+    - Pocket ID:
+        icon: pocket-id.png
+        href: http://auth.{{ domain }}
+        description: Identity Provider
+
+- Services:
+    - Immich:
+        icon: immich.png
+        href: http://photos.{{ domain }}
+        description: Photo Management
+
+    - Vaultwarden:
+        icon: vaultwarden.png
+        href: http://vault.{{ domain }}
+        description: Password Manager
+
+    - Home Assistant:
+        icon: home-assistant.png
+        href: http://home.{{ domain }}
+        description: Smart Home Automation

@@ -1,0 +1,9 @@
+[Interface]
+PrivateKey = {{ wg_private_key }}
+Address = {{ edge_wg_ip }}
+ListenPort = {{ wireguard_port }}
+
+# Primary Node Peer
+[Peer]
+PublicKey = {{ hostvars['n150-node']['wg_public_key'] }}
+AllowedIPs = {{ primary_wg_ip }}

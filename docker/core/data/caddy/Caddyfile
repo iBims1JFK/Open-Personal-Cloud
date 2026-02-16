@@ -1,0 +1,23 @@
+{
+    email admin@{$DOMAIN}
+    # Local-only: self-signed certs for testing
+    local_certs
+}
+
+(auth) {
+    forward_auth localhost:8080 {
+        uri /api/oidc/auth
+        copy_headers Remote-User Remote-Email Remote-Name
+    }
+}
+
+auth.{$DOMAIN}, localhost:8080 {
+    reverse_proxy localhost:8080
+}
+
+cloud.{$DOMAIN}, localhost:3000 {
+    import auth
+    reverse_proxy localhost:3000
+}
+
+# ... other services

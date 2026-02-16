@@ -26,5 +26,7 @@ resource "hcloud_server" "edge_node" {
     ipv6_enabled = true
   }
 
-  user_data = file("${path.module}/cloud-init.yaml")
+  user_data = templatefile("${path.module}/cloud-init.yaml", {
+    ssh_keys = var.ssh_keys
+  })
 }

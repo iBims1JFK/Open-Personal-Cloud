@@ -1,0 +1,26 @@
+#cloud-config
+users:
+  - name: clouduser
+    groups: sudo
+    shell: /bin/bash
+    sudo: ['ALL=(ALL) NOPASSWD:ALL']
+    ssh_authorized_keys:
+%{ for key in ssh_keys ~}
+      - ${key}
+%{ endfor ~}
+
+package_update: true
+package_upgrade: true
+
+packages:
+  - ufw
+  - fail2ban
+  - curl
+  - git
+
+runcmd:
+  - ufw allow 22/tcp
+  - ufw allow 80/tcp
+  - ufw allow 443/tcp
+  - ufw allow 51820/udp
+  - ufw --force enable

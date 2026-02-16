@@ -1,0 +1,16 @@
+all:
+  children:
+    primary:
+      hosts:
+        test_node:
+          ansible_host: opc_test_node
+          ansible_connection: docker
+          ansible_user: root
+          ansible_python_interpreter: /usr/bin/python3
+      # We need to use sudo for the docker connection itself if the user on host is not in docker group
+      # But ansible_connection=docker uses the local docker client.
+      # Since we are running the test script with sudo, it should work?
+      # Ah, the error is inside the container or on the host?
+      # "permission denied while trying to connect to the docker API at unix:///var/run/docker.sock"
+      # This usually means the user executing 'docker' command doesn't have permissions.
+      # If we run ansible-playbook without sudo, and our user isn't in docker group, it fails.

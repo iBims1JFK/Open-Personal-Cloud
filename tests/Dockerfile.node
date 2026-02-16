@@ -1,0 +1,35 @@
+FROM ubuntu:24.04
+
+# Install basic dependencies for Ansible connection and storage
+RUN apt-get update && apt-get install -y \
+    python3 \
+    python3-apt \
+    sudo \
+    systemd \
+    systemd-sysv \
+    iproute2 \
+    dbus \
+    fuse \
+    udev \
+    wget \
+    curl \
+    gnupg \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Fix systemd inside container
+RUN cd /lib/systemd/system/sysinit.target.wants/; ls | grep -v systemd-tmpfiles-setup | xargs rm -f $1; \
+    rm -f /lib/systemd/system/multi-user.target.wants/*;\
+    rm -f /etc/systemd/system/*.wants/*;\
+    rm -f /lib/systemd/system/local-fs.target.wants/*; \
+    rm -f /lib/systemd/system/sockets.target.wants/*udev*; \
+    rm -f /lib/systemd/system/sockets.target.wants/*initctl*; \
+    rm -f /lib/systemd/system/basic.target.wants/*;\
+    rm -f /lib/systemd/system/anaconda.target.wants/*;
+
+# Add a test user
+RUN useradd -rm -d /home/test -s /bin/bash -g root -G sudo test \
+    && echo 'test:test' | chpasswd \
+    && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+
+VOLUME [ "/sys/fs/cgroup" ]
+CMD ["/lib/systemd/systemd"]

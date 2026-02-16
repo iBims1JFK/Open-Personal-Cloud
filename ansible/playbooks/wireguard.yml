@@ -1,0 +1,56 @@
+---
+- name: Configure WireGuard
+  hosts: all
+  become: yes
+  tasks:
+    - name: Install WireGuard
+      apt:
+        name: wireguard
+        state: present
+
+    - name: Generate WireGuard private key
+      shell: "wg genkey"
+      register: wg_private_key_raw
+      changed_when: false
+
+    - name: Set private key fact
+      set_fact:
+        wg_private_key: "{{ wg_private_key_raw.stdout }}"
+
+    - name: Generate WireGuard public key
+      shell: "echo {{ wg_private_key }} | wg pubkey"
+      register: wg_public_key_raw
+      changed_when: false
+
+    - name: Set public key fact
+      set_fact:
+        wg_public_key: "{{ wg_public_key_raw.stdout }}"
+
+- name: Setup Edge Node Config
+  hosts: edge
+  become: yes
+  tasks:
+    - name: Create WireGuard config for Edge
+      template:
+        src: templates/wg0-edge.conf.j2
+        dest: /etc/wireguard/wg0.conf
+        mode: '0600'
+      notify: Restart WireGuard
+
+- name: Setup Primary Node Config
+  hosts: primary
+  become: yes
+  tasks:
+    - name: Create WireGuard config for Primary
+      template:
+        src: templates/wg0-primary.conf.j2
+        dest: /etc/wireguard/wg0.conf
+        mode: '0600'
+      notify: Restart WireGuard
+
+  handlers:
+    - name: Restart WireGuard
+      systemd:
+        name: wg-quick@wg0
+        state: restarted
+        enabled: yes

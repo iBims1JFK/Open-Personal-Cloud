@@ -1,0 +1,10 @@
+[Interface]
+PrivateKey = {{ wg_private_key }}
+Address = {{ primary_wg_ip }}
+
+# Edge Node Peer
+[Peer]
+PublicKey = {{ hostvars['vps-node']['wg_public_key'] }}
+Endpoint = {{ hostvars['vps-node']['ansible_host'] }}:{{ wireguard_port }}
+AllowedIPs = {{ edge_wg_ip }}
+PersistentKeepalive = 25

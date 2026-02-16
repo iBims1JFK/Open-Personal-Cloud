@@ -1,0 +1,12 @@
+# Global variables
+domain: "local.home"
+wireguard_port: 51820
+
+# Storage (Primary) - Defaults for simulation
+storage_disks:
+  - /dev/loop0
+  - /dev/loop1
+storage_parity_disk: /dev/loop2
+storage_parity_mount: /mnt/parity
+storage_mount_point: /mnt/storage
+storage_pool_point: /mnt/pool

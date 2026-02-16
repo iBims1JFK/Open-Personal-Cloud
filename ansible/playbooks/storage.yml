@@ -11,3 +11,42 @@
           - hardlink
         state: present
         update_cache: yes
+
+    - name: Ensure mount points exist
+      file:
+        path: "{{ item }}"
+        state: directory
+      loop:
+        - "{{ storage_mount_point }}"
+        - "{{ storage_pool_point }}"
+        - "{{ storage_parity_mount }}"
+
+    - name: Mount parity disk
+      mount:
+        path: "{{ storage_parity_mount }}"
+        src: "{{ storage_parity_disk }}"
+        fstype: ext4
+        opts: defaults
+        state: mounted
+
+    - name: Mount individual disks
+      mount:
+        path: "/mnt/disk{{ item.0 }}"
+        src: "{{ item.1 }}"
+        fstype: ext4 # Assuming ext4, should be configurable
+        opts: defaults
+        state: mounted
+      with_indexed_items: "{{ storage_disks }}"
+
+    - name: Configure mergerfs
+      mount:
+        path: "{{ storage_pool_point }}"
+        src: "/mnt/disk*:/{{ storage_mount_point }}"
+        fstype: fuse.mergerfs
+        opts: "cache.files=off,dropcacheonclose=true,category.create=mfs,allow_other"
+        state: mounted
+
+    - name: Generate SnapRAID config
+      template:
+        src: templates/snapraid.conf.j2
+        dest: /etc/snapraid.conf

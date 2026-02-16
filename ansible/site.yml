@@ -1,0 +1,6 @@
+---
+- import_playbook: playbooks/docker.yml
+- import_playbook: playbooks/security.yml
+# - import_playbook: playbooks/wireguard.yml # Disabled for local-only
+- import_playbook: playbooks/storage.yml
+# - import_playbook: playbooks/backup.yml # Disabled for local-only

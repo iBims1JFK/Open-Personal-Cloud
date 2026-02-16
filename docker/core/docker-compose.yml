@@ -1,8 +1,11 @@
 services:
   pocket-id:
-    image: pocketid/pocket-id:latest
+    image: ghcr.io/pocket-id/pocket-id:latest
     ports:
       - "8080:8080"
+    environment:
+      - ENCRYPTION_KEY=ChangeMe12345678 # Must be at least 16 chars
+      - PUBLIC_URL=http://auth.local.home # Adjust for your domain
     volumes:
       - ./data/pocket-id:/app/backend/data
     restart: unless-stopped

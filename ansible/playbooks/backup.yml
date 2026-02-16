@@ -1,0 +1,27 @@
+---
+- name: Configure Backup Node
+  hosts: backup
+  become: yes
+  tasks:
+    - name: Install Restic
+      apt:
+        name: restic
+        state: present
+
+    - name: Ensure backup directory exists
+      file:
+        path: /var/backups/restic
+        state: directory
+        owner: root
+        group: root
+        mode: '0700'
+
+    - name: Initialize Restic repository (if not exists)
+      shell: "restic -r /var/backups/restic init"
+      environment:
+        RESTIC_PASSWORD: "{{ restic_password }}"
+      register: restic_init
+      failed_when: 
+        - restic_init.rc != 0
+        - "'already initialized' not in restic_init.stderr"
+      changed_when: "'already initialized' not in restic_init.stderr"
