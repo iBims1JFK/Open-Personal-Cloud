@@ -1,0 +1,18 @@
+services:
+  immich-server:
+    image: ghcr.io/immich-app/immich-server:release
+    volumes:
+      - ${UPLOAD_LOCATION}:/usr/src/app/upload
+      - /etc/localtime:/etc/localtime:ro
+    env_file:
+      - .env
+    ports:
+      - 2283:3001
+
+  vaultwarden:
+    image: vaultwarden/server:latest
+    volumes:
+      - ./vw-data/:/data/
+    ports:
+      - 8081:80
+    restart: unless-stopped

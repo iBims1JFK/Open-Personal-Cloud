@@ -1,0 +1,13 @@
+services:
+  stalwart-mail:
+    image: stalwartlabs/mail-server:latest
+    ports:
+      - "25:25"
+      - "465:465"
+      - "587:587"
+      - "993:993"
+      - "4190:4190"
+      - "8082:8080" # Web Admin
+    volumes:
+      - ./data:/opt/stalwart-mail/data
+    restart: unless-stopped

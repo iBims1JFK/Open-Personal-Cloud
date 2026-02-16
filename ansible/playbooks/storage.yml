@@ -1,0 +1,13 @@
+---
+- name: Configure Storage (mergerfs + SnapRAID)
+  hosts: primary
+  become: yes
+  tasks:
+    - name: Install storage utilities
+      apt:
+        name:
+          - mergerfs
+          - snapraid
+          - hardlink
+        state: present
+        update_cache: yes
